@@ -8,6 +8,18 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders import UnstructuredURLLoader
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
+# --- Fix for imghdr missing in Python 3.13 ---
+
+import sys
+import types
+
+if "imghdr" not in sys.modules:
+    imghdr = types.ModuleType("imghdr")
+    def what(file, h=None):
+        return None
+    imghdr.what = what
+    sys.modules["imghdr"] = imghdr
+# ---------------------------------------------
 
 from dotenv import load_dotenv
 load_dotenv()  # take environment variables from .env (especially openai api key)
@@ -66,6 +78,7 @@ if query:
                 sources_list = sources.split("\n")  # Split the sources by newline
                 for source in sources_list:
                     st.write(source)
+
 
 
 
